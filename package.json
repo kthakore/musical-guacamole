@@ -1,0 +1,47 @@
+{
+  "name": "pump_up_submission",
+  "version": "0.0.1",
+  "description": "Code challenge submission for PumpUp",
+  "main": "index.js",
+  "scripts": {
+    "start-docker": "docker-compose up -d",
+    "postinstall": "npm run start-docker",
+    "start": "NODE_ENV=development ./node_modules/.bin/nodemon --harmony server.js",
+    "test": "npm run base-test && npm run lint",
+    "base-test": "NODE_ENV=test ./node_modules/.bin/mocha --harmony --reporter spec ./test/test-*.js",
+    "lint": "eslint src app test webpack config lib server.js webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kthakore/musical-guacamole.git"
+  },
+  "keywords": [
+    "Koa",
+    "Kafka",
+    "PostgreSQL",
+    "Mocha",
+    "Should",
+    "ESLint",
+    "Sequelize"
+  ],
+  "author": "Kartik Thakore",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kthakore/musical-guacamole/issues"
+  },
+  "homepage": "https://github.com/kthakore/musical-guacamole#readme",
+  "devDependencies": {
+    "eslint": "^3.6.0",
+    "mocha": "^3.0.2",
+    "nodemon": "^1.10.2",
+    "should": "^11.1.0"
+  },
+  "dependencies": {
+    "kafkaesque": "^1.0.0",
+    "koa": "^1.2.4",
+    "koa-orm": "^1.1.1",
+    "pg": "^6.1.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.24.3"
+  }
+}

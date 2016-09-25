@@ -1,0 +1,17 @@
+db: 
+    restart: always
+    image: postgres:latest
+    ports:
+        - "5432:5432"
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_DB: magical_guac
+        POSTGRES_PASSWORD: GH4i9a91m
+    volumes:
+        - ./db:/docker-entrypoint-initdb.d
+kafka:
+    restart: always
+    image: spotify/kafka
+    ports:
+        - "2181:2181"
+        - "9092:9092"
