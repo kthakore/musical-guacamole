@@ -1,8 +1,11 @@
-var koa = require('koa');
-var join = require('path').join;
-
-var config = {
-    modelPath: join(__dirname, 'models'),
+'use strict'
+var koa = require('koa'),
+  join = require('path').join,
+  bodyParser = require('koa-bodyparser'),
+  _ = require('lodash'),
+  boom = require('koa-boom'),
+  config = {
+    modelPath: join(__dirname, 'lib/models'),
     db: 'magical_guac',
     username: 'postgres',
     password: 'GH4i9a91m',
@@ -10,43 +13,71 @@ var config = {
     host: 'localhost',
     port: '5432',
     pool: {
-        maxConnections: 10,
-        minConnections: 0,
-        maxIdleTime: 30000
+      maxConnections: 10,
+      minConnections: 0,
+      maxIdleTime: 30000
     }
-};
+  },
+  orm = require('koa-orm')(config),
+  logger = require('./lib/middleware/logger')({topic: 'log'}),
+  router = require('koa-router')(),
+  koaBody = require('koa-body'),
+  app = module.exports = koa()
 
-var orm = require('koa-orm')(config);
-
-var app = module.exports = koa();
-
-app.use(orm.middleware);
+  app.use(bodyParser());
 
 
+  router.post('/log', function *POSTLog(next) {
 
-app.use(function *pageNotFound(next){
-  yield next;
+    let logMessage = this.request.body;
 
-  if (404 != this.status) return;
+    if (logMessage === undefined || logMessage.actionId === undefined) {
+      boom.badRequest(this, 'Bad JSON Request, actionId is required')
+    } else {
+      yield this.log.sendOnce({ message : logMessage })
+      console.log("Sending message")
+    }
+  }).
+  post('/classes/user', function *POSTUser(next) {
 
-  // we need to explicitly set 404 here
-  // so that koa doesn't assign 200 on body=
-  this.status = 404;
+    var out = yield this.orm().users.create(this.request.body)
 
-  switch (this.accepts('html', 'json')) {
-    case 'html':
-      this.type = 'html';
+    // Log is created with actionId = USER_SIGNUP and data = request.body
+    yield this.log.sendOnce({ message: {actionId : 'USER_SIGNUP', data: this.request.body}})
+    this.body = out
+  }).
+  put('/classes/user/:id', function *PUTUser(next) {
+    var out = yield this.orm().users.find({id : this.params.id})
+
+    this.body = out
+  })
+
+  app.use(orm.middleware)
+  .use(logger.middleware)
+  .use(router.routes())
+  .use(function *pageNotFound(next){
+    yield next;
+
+    if (404 != this.status) return;
+
+    // we need to explicitly set 404 here
+    // so that koa doesn't assign 200 on body=
+    this.status = 404;
+
+    switch (this.accepts('html', 'json')) {
+      case 'html':
+        this.type = 'html';
       this.body = '<p>Page Not Found</p>';
       break;
-    case 'json':
-      this.body = {
+      case 'json':
+        this.body = {
         message: 'Page Not Found'
       };
       break;
-    default:
-      this.type = 'text';
+      default:
+        this.type = 'text';
       this.body = 'Page Not Found';
-  }
-})
+    }
+  })
 
-if (!module.parent) app.listen(3000);
+  if (!module.parent) app.listen(3000)

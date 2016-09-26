@@ -5,6 +5,7 @@ create extension if not exists "pgcrypto";
 create table users (
     id uuid not null default uuid_generate_v4(),
 -- using citext for email as email address is case insensitive
+    name text not null,
     email citext not null,
     password text not null check (length(password) < 512),
     created_at timestamptz not null default NOW(),
