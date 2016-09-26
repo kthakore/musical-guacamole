@@ -1,10 +1,10 @@
-var should = require('should');
+/*global describe, before*/
 
 describe('LogProducer', function () {
 
-    before(function(done) {
+  before(function(done) {
 
-        done();
-    });
+    done()
+  })
 
-});
+})

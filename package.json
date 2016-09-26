@@ -6,7 +6,8 @@
   "scripts": {
     "start-docker": "docker-compose up -d",
     "postinstall": "npm run start-docker",
-    "start": "NODE_ENV=development ./node_modules/.bin/nodemon --harmony server.js",
+    "start": "bash scripts/start.sh",
+    "start-consumer": "./node_modules/.bin/node --harmony co_log_consumer.js",
     "test": "npm run base-test && npm run lint",
     "base-test": "NODE_ENV=test ./node_modules/.bin/mocha --harmony --reporter spec ./test/test-*.js",
     "lint": "eslint src app test webpack config lib server.js webpack.config.js"
@@ -31,6 +32,7 @@
   },
   "homepage": "https://github.com/kthakore/musical-guacamole#readme",
   "devDependencies": {
+    "cross-spawn": "^4.0.2",
     "eslint": "^3.6.0",
     "mocha": "^3.0.2",
     "no-kafka": "^2.8.1",
