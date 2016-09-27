@@ -28,6 +28,7 @@ app.use(bodyParser())
 
 
 router.post('/log', function *POSTLog() {
+
   let logMessage = this.request.body
 
   if (logMessage === undefined || logMessage.actionId === undefined) {
@@ -35,7 +36,10 @@ router.post('/log', function *POSTLog() {
   } else {
     yield this.log.sendOnce({ message : logMessage })
   }
+
 }).
+
+
 post('/classes/user', function *POSTUser() {
 
   var out = yield this.orm().users.create(this.request.body)
@@ -43,8 +47,12 @@ post('/classes/user', function *POSTUser() {
   // Log is created with actionId = USER_SIGNUP and data = request.body
   yield this.log.sendOnce({ message: {actionId : 'USER_SIGNUP', data: this.request.body}})
   this.body = out
+
 }).
+
+
 put('/classes/user/:id', function *PUTUser() {
+
   var out = yield this.orm().users.find({id : this.params.id})
 
   yield this.log.sendOnce({ message: {actionId : 'USER_EDIT_PROFILE', data: this.request.body}})
