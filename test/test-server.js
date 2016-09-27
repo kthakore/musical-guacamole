@@ -3,13 +3,13 @@
 
 
 var app       = require('../server'),
-  request   = require('supertest')
+  request     = require('supertest')
     .agent(app.listen()),
-  should    = require('should'),
-  fs        = require('fs'),
-  Sequelize = require('sequelize'),
-  sequelize = new Sequelize('magical_guac', 'postgres', 'GH4i9a91m', {'dialect' : 'postgres'}),
-  spawn = require('cross-spawn-with-kill')
+  should      = require('should'),
+  fs          = require('fs'),
+  Sequelize   = require('sequelize'),
+  sequelize   = new Sequelize('magical_guac', 'postgres', 'GH4i9a91m', {'dialect' : 'postgres'}),
+  spawn       = require('cross-spawn-with-kill')
 
 const logFile = 'app.log'
 
