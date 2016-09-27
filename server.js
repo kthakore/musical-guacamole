@@ -47,6 +47,8 @@ post('/classes/user', function *POSTUser() {
 put('/classes/user/:id', function *PUTUser() {
   var out = yield this.orm().users.find({id : this.params.id})
 
+  yield this.log.sendOnce({ message: {actionId : 'USER_EDIT_PROFILE', data: this.request.body}})
+
   this.body = out
 })
 

@@ -34,6 +34,8 @@ describe('App Server', function() {
       .then(() => {done()})
     })
   })
+
+
   it('should allow POST on /log', function(done) {
 
     let random_user_id = Math.random(),
@@ -53,6 +55,8 @@ describe('App Server', function() {
       }, 500)
     })
   })
+
+
 
   it('should allow POST on /classes/user', function(done) {
 
@@ -78,6 +82,8 @@ describe('App Server', function() {
       })
     })
   })
+
+
 
 
   it('should allow POST on /classes/user/:id', function(done) {
