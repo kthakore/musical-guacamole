@@ -1,4 +1,4 @@
-/*global require, describe, before, after, it*/
+/*global require, describe, before, after, it, beforeEach*/
 'use strict'
 
 
@@ -38,24 +38,26 @@ describe('App Server', function() {
   //TODO: Use some more yeild or promises to make
   // this cleaner.
   before(function(done) {
-    // Empty the log file so we have a clear start
-    fs.truncate(logFile, 0, () => {
-      // Empty the Users table
-      sequelize.query('DELETE FROM users')
-      .then(() => {
+    // Empty the Users table
+    sequelize.query('DELETE FROM users')
+    .then(() => {
 
-        /* For testing purposes start the file
-         * consume that will write to app.log
-         * Once started, sleeping for a second
-         * to ensure that the consumer is read.
-         * TODO: Use a real test to see if the
-         * consumer has actually started.
-         */
-        childConsumerProcess = spawn('npm', ['run', 'start-consumer'], { stdio: 'inherit' })
+      /* For testing purposes start the file
+       * consume that will write to app.log
+       * Once started, sleeping for a second
+       * to ensure that the consumer is read.
+       * TODO: Use a real test to see if the
+       * consumer has actually started.
+       */
+      childConsumerProcess = spawn('npm', ['run', 'start-consumer'], { stdio: 'inherit' })
 
-        setTimeout(done, 1500)
-      })
+      setTimeout(done, 1500)
     })
+  })
+
+  beforeEach(function(done) {
+ // Empty the log file so we have a clear start
+    fs.truncate(logFile, 0, done)
   })
 
 
@@ -78,6 +80,11 @@ describe('App Server', function() {
   })
 
 
+  // Save the random created user in the
+  // test below to reuse for integration
+  // testing
+  var createdUser
+
 
   it('should allow POST on /classes/user', function(done) {
 
@@ -95,6 +102,8 @@ describe('App Server', function() {
         should.exist(users)
         should.exist(users[0])
         should.equal(users[0].email, 'foo' + rand + '@bar.com')
+
+        createdUser = users[0]
 
         // Time out to ensure that the app.log has been updated
         setTimeout(() => {
@@ -119,21 +128,62 @@ describe('App Server', function() {
 
 
 
-  it('should allow POST on /classes/user/:id', function(done) {
-
-
-    request.post('/classes/user/123213123')
-    .send({'name' : 'bob', 'password' : 'abc123'})
+  it('should return 400 on invalid user.id PUT to /classes/user/:id', function(done) {
+    request.put('/classes/user/123213123')
+    .send({name : 'bob', password : 'abc123'})
     .expect(400)
-    .end(() => {
-      var line = GetLastLogLine()
+    .end(done)
+  })
 
-      should.exist(line)
-      // Look for app.log to have file
 
+  it('should not allowed change of email on PUT to /classes/user/:id', function(done) {
+    request.put('/classes/user/' + createdUser.id)
+    .send({name : 'bob', password : 'abc123', email: 'bob@foo.com'})
+    .expect(400)
+    .end(done)
+  })
+
+
+  it('should allowed change of name and password on PUT to /classes/user/:id', function(done) {
+    let randName = 'boo' + Math.random()
+    request.put('/classes/user/' + createdUser.id)
+    .send({ password : 'abc123', name: randName})
+    .expect(200)
+    .end((err, res) => {
+      should.not.exist(err)
+      should.equal(res.body.name, randName)
       done()
     })
   })
+
+
+  it('should allowed log to app.log on PUT to /classes/user/:id', function(done) {
+    let randName = 'boo' + Math.random(),
+      randChange = { password: 'abc123', name: randName }
+    request.put('/classes/user/' + createdUser.id)
+    .send(randChange)
+    .expect(200)
+    .end((err, res) => {
+      should.not.exist(err)
+      should.equal(res.body.name, randName)
+
+      setTimeout(() => {
+
+        let line = GetLastLogLine()
+        should.exist(line)
+        let message = {actionId: 'USER_EDIT_PROFILE', data: randChange}
+
+        line.should.match('log ' + '0 ' + JSON.stringify(message))
+        // Look for app.log to have file
+
+        done()
+
+      }, 700)
+
+
+    })
+  })
+
 
   after(function(done) {
     // Click the consumer we started ealier

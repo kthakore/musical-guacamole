@@ -3,8 +3,6 @@
 var koa = require('koa'),
   join = require('path').join,
   bodyParser = require('koa-bodyparser'),
-//  _ = require('lodash'),
-  boom = require('Boom'),
   config = {
     modelPath: join(__dirname, 'lib/models'),
     db: 'magical_guac',
@@ -32,7 +30,9 @@ router.post('/log', function *POSTLog() {
   let logMessage = this.request.body
 
   if (logMessage === undefined || logMessage.actionId === undefined) {
-    boom.badRequest('Bad JSON Request, actionId is required')
+    this.status = 400
+    this.body = 'Invalid Parameter'
+
   } else {
     yield this.log.sendOnce({ message : logMessage })
   }
@@ -56,32 +56,37 @@ put('/classes/user/:id', function *PUTUser() {
   try {
     user = yield this.orm().users.findById(this.params.id)
 
-    console.log(this.request.body)
-    this.body = this.request.body
+    if (user == null) {
+      throw new Error('Cannot find user')
+    }
 
-    if (this.body.email) {
+
+    if (this.request.body.email) {
       throw new Error('Cannot change email')
     }
-
-
-    if (this.body.name) {
-      user.set('name', this.body.name)
+    // Check if the name has changed
+    // and then set it
+    if (this.request.body.name !== user.name) {
+      user.set('name', this.request.body.name)
     }
 
-    if (this.body.password) {
-      user.set('password', this.body.password)
+    // Always change password as we don't know what
+    // the password is. It is hashed in the DB.
+    if (this.request.body.password) {
+      user.set('password', this.request.body.password)
     }
 
 
     yield user.save()
 
-    yield this.log.sendOnce({ message: {actionId : 'USER_EDIT_PROFILE', data: this.body}})
+    yield this.log.sendOnce({ message: {actionId : 'USER_EDIT_PROFILE', data: this.request.body}})
     this.body = user
 
   } catch (err) {
 
     this.status = 400
-    this.body = 'Invalid Parameter'
+    // TODO: only send error out in debug mode
+    this.body = 'Invalid Parameter: ' + err
   }
 
 })

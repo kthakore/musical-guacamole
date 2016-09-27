@@ -8,6 +8,7 @@
         "sourceType": "module"
     },
     "rules": {
+        "no-console": ["error", { "allow": ["warn", "error"] }],
         "space-before-blocks": [
            "error",
            { "functions": "always", "keywords": "always", "classes": "always" }
