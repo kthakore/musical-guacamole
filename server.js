@@ -35,6 +35,7 @@ router.post('/log', function *POSTLog() {
 
   } else {
     yield this.log.sendOnce({ message : logMessage })
+    this.body = 'Logged'
   }
 
 }).

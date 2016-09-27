@@ -1,5 +1,4 @@
 db: 
-    restart: always
     image: postgres:latest
     ports:
         - "5432:5432"
@@ -9,12 +8,13 @@ db:
         POSTGRES_PASSWORD: GH4i9a91m
     volumes:
         - ./db:/docker-entrypoint-initdb.d
+
 kafka:
-    restart: always
     build: ./kafka
     environment:
-      AUTO_CREATE_TOPICS: "true" 
-      TOPICS: log
+      ADVERTISED_PORT: 9092
+      ADVERTISED_HOST: "localhost"
     ports:
-        - "2181:2181"
-        - "9092:9092"
+      - "2181:2181"
+      - "9092:9092"
+

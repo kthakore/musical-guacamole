@@ -4,13 +4,15 @@
   "description": "Code challenge submission for PumpUp",
   "main": "index.js",
   "scripts": {
-    "start-docker": "docker-compose up -d",
+    "start-docker": "DOCKER_IP=localhost docker-compose up -d",
+    "install-kafka": "sh scripts/install_kafka.sh",
+    "run-kafka" : "sh scripts/start_kafka.sh",
     "postinstall": "npm run start-docker",
     "pre-start": "npm run start-docker",
-    "start": "nodemon --harmony server.js",
+    "start": "DOCKER_IP=localhost nodemon --harmony server.js",
     "start-consumer": "npm run start-docker && node --harmony lib/consumer.js",
     "test": "npm run base-test && npm run lint",
-    "base-test": "npm run start-docker && mocha --harmony --reporter spec ./test/test-*.js",
+    "base-test": "npm run start-docker && DOCKER_IP=localhost mocha --harmony --reporter spec ./test/test-*.js",
     "lint": "eslint src app test webpack config lib server.js webpack.config.js"
   },
   "repository": {

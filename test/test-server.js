@@ -20,6 +20,7 @@ const logFile = 'app.log'
 function GetLastLogLine() {
   var data  = fs.readFileSync(logFile, 'utf8'),
     lines = data.split('\n')
+
   // Since a new line character is added at the end of each log item
   // the last line will always be empty so get the line before that
   return lines[lines.length-2]
@@ -75,7 +76,7 @@ describe('App Server', function() {
         should.exist(line)
 
         done()
-      }, 500)
+      }, 1000)
     })
   })
 
@@ -172,13 +173,12 @@ describe('App Server', function() {
         let line = GetLastLogLine()
         should.exist(line)
         let message = {actionId: 'USER_EDIT_PROFILE', data: randChange}
-
         line.should.match('log ' + '0 ' + JSON.stringify(message))
         // Look for app.log to have file
 
         done()
 
-      }, 700)
+      }, 1000)
 
 
     })
