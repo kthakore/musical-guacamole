@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start-docker": "docker-compose up -d",
-    "postinstall": "npm run start-docker && bash script/install_kafka.sh",
-    "pre-start": "sh script/start_kafka.sh",
-    "start": "bash scripts/start.sh",
-    "start-consumer": "./node_modules/.bin/node --harmony lib/consumer.js",
+    "postinstall": "npm run start-docker",
+    "pre-start": "npm run start-docker",
+    "start": "nodemon --harmony server.js",
+    "start-consumer": "npm run start-docker && node --harmony lib/consumer.js",
     "test": "npm run base-test && npm run lint",
-    "base-test": "NODE_ENV=test ./node_modules/.bin/mocha --harmony --reporter spec ./test/test-*.js",
+    "base-test": "npm run start-docker && mocha --harmony --reporter spec ./test/test-*.js",
     "lint": "eslint src app test webpack config lib server.js webpack.config.js"
   },
   "repository": {
