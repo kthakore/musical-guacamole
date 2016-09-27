@@ -124,7 +124,7 @@ describe('App Server', function() {
 
     request.post('/classes/user/123213123')
     .send({'name' : 'bob', 'password' : 'abc123'})
-    .expect(200)
+    .expect(400)
     .end(() => {
       var line = GetLastLogLine()
 

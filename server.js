@@ -4,7 +4,7 @@ var koa = require('koa'),
   join = require('path').join,
   bodyParser = require('koa-bodyparser'),
 //  _ = require('lodash'),
-  boom = require('koa-boom'),
+  boom = require('Boom'),
   config = {
     modelPath: join(__dirname, 'lib/models'),
     db: 'magical_guac',
@@ -32,7 +32,7 @@ router.post('/log', function *POSTLog() {
   let logMessage = this.request.body
 
   if (logMessage === undefined || logMessage.actionId === undefined) {
-    boom.badRequest(this, 'Bad JSON Request, actionId is required')
+    boom.badRequest('Bad JSON Request, actionId is required')
   } else {
     yield this.log.sendOnce({ message : logMessage })
   }
@@ -52,16 +52,38 @@ post('/classes/user', function *POSTUser() {
 
 
 put('/classes/user/:id', function *PUTUser() {
+  var user
+  try {
+    user = yield this.orm().users.findById(this.params.id)
 
-  console.log(this.params.id)
+    console.log(this.request.body)
+    this.body = this.request.body
 
-  var user = yield this.orm().users.findById(this.params.id)
+    if (this.body.email) {
+      throw new Error('Cannot change email')
+    }
 
-  yield this.log.sendOnce({ message: {actionId : 'USER_EDIT_PROFILE', data: this.request.body}})
 
-  console.log(user)
+    if (this.body.name) {
+      user.set('name', this.body.name)
+    }
 
-  this.body = user
+    if (this.body.password) {
+      user.set('password', this.body.password)
+    }
+
+
+    yield user.save()
+
+    yield this.log.sendOnce({ message: {actionId : 'USER_EDIT_PROFILE', data: this.body}})
+    this.body = user
+
+  } catch (err) {
+
+    this.status = 400
+    this.body = 'Invalid Parameter'
+  }
+
 })
 
 
