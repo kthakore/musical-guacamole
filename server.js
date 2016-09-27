@@ -56,7 +56,7 @@ put('/classes/user/:id', function *PUTUser() {
 app.use(orm.middleware)
 .use(logger.middleware)
 .use(router.routes())
-.use(function *pageNotFound(next){
+.use(function *pageNotFound (next) {
   yield next
 
   if (404 != this.status) return
