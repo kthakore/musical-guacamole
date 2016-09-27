@@ -2,6 +2,8 @@
 Koa, Kafka, PostgreSQL, Mocha, Should, ESLint, Sequelize Application
 
 
+![Woohoo](https://raw.githubusercontent.com/kthakore/musical-guacamole/master/test_run.gif)
+
 # Works on
   - MacOSX (OSX El Capitan)
   - Docker for Mac Version 1.12.1-beta26.1 (build: 12100)
