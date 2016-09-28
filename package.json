@@ -1,7 +1,7 @@
 {
-  "name": "pump_up_submission",
+  "name": "magical_guac",
   "version": "0.0.1",
-  "description": "Code challenge submission for PumpUp",
+  "description": "Experiment with koa and kafka/pg",
   "main": "index.js",
   "scripts": {
     "start-docker": "DOCKER_IP=localhost docker-compose up -d",
