@@ -31,15 +31,13 @@ describe('User Model', function userModelTest() {
     try {
       userModel.create().then(() => {
         should.fail('User should not have been created')
-        done()
       })
     } catch(err) {
       should.equal(err.message.match(/^name cannot be null/), null)
       should.equal(err.message.match(/^email cannot be null/), null)
       should.equal(err.message.match(/^password cannot be null/), null)
-      done()
     }
-
+    done()
 
   })
 
@@ -64,17 +62,18 @@ describe('User Model', function userModelTest() {
 
     })
 
-    it('should not marshal password field', function passwordFieldTest() {
+    it('should not marshal password field', function passwordFieldTest(done) {
 
       should.not.exist(created_user.toJSON().password)
-
+      done()
     })
 
 
-    it('should have name, email', function dataSavedTest() {
+    it('should have name, email', function dataSavedTest(done) {
 
       should.equal(created_user.name, 'foo')
       should.equal(created_user.email, 'food@man.com')
+      done()
     })
   })
 
