@@ -34,9 +34,9 @@ describe('User Model', function userModelTest() {
         done()
       })
     } catch(err) {
-
-      should.not.equals(err.message.match(/^email cannot be null/), null)
-      should.not.equals(err.message.match(/^password cannot be null/), null)
+      should.equal(err.message.match(/^name cannot be null/), null)
+      should.equal(err.message.match(/^email cannot be null/), null)
+      should.equal(err.message.match(/^password cannot be null/), null)
       done()
     }
 
@@ -65,7 +65,7 @@ describe('User Model', function userModelTest() {
 
   it('should not marshal password field', function passwordFieldTest() {
 
-
+    should.not.exist(created_user.toJSON().password)
 
   })
 
