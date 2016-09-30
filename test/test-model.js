@@ -3,10 +3,10 @@
 
 
 var should      = require('should'),
-    Sequelize   = require('sequelize'),
-    sequelize   = new Sequelize('magical_guac', 'postgres', 'GH4i9a91m', {'dialect' : 'postgres'}),
-    join        = require('path').join,
-    userModel   = sequelize.import(join(__dirname, '../lib/models/users'))
+  Sequelize   = require('sequelize'),
+  sequelize   = new Sequelize('magical_guac', 'postgres', 'GH4i9a91m', {'dialect' : 'postgres'}),
+  join        = require('path').join,
+  userModel   = sequelize.import(join(__dirname, '../lib/models/users'))
 
 
 describe('User Model', function userModelTest() {
@@ -29,7 +29,7 @@ describe('User Model', function userModelTest() {
   it('should require email and password', function createWithoutEmailPasswordTest(done) {
 
     try {
-        userModel.create().then(() => {
+      userModel.create().then(() => {
         should.fail('User should not have been created')
         done()
       })
@@ -45,7 +45,7 @@ describe('User Model', function userModelTest() {
 
 
   describe('creating user', () => {
-    var created_user
+    let created_user
 
     it('should allow user creation with name, email, password', function createWithEmailPasswordTest(done) {
 
@@ -76,7 +76,8 @@ describe('User Model', function userModelTest() {
       should.equal(created_user.name, 'foo')
       should.equal(created_user.email, 'food@man.com')
     })
-   })
+  })
+
 
 
 })
