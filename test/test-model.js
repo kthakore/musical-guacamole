@@ -73,8 +73,8 @@ describe('User Model', function userModelTest() {
 
     it('should have name, email', function dataSavedTest() {
 
-
-
+      should.equal(created_user.name, 'foo')
+      should.equal(created_user.email, 'food@man.com')
     })
    })
 
