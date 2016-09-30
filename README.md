@@ -5,6 +5,7 @@ Koa, Kafka, PostgreSQL, Mocha, Should, ESLint, Sequelize Application
 ![Woohoo](https://raw.githubusercontent.com/kthakore/musical-guacamole/master/test_run.gif)
 
 # TODO
+  - Use EventEmitter for consumer/producer for ease in testing
   - Environment variables/config
   - Docker Node for the server
   - Scaling with Docker Swarm/Machine
