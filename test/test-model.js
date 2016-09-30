@@ -44,31 +44,39 @@ describe('User Model', function userModelTest() {
   })
 
 
-  var created_user
+  describe('creating user', () => {
+    var created_user
 
-  it('should allow user creation with name, email, password', function createWithEmailPasswordTest(done) {
+    it('should allow user creation with name, email, password', function createWithEmailPasswordTest(done) {
 
-    try {
+      try {
         userModel.create({email: 'food@man.com', password: 'bob', name: 'foo'})
         .then((res) => {
           should.exist(res)
           created_user = res
           done()
-      })
-    } catch(err) {
-      should.fail('Shouldn\'t have any errors:' + err.message)
-      done()
-    }
+        })
+      } catch(err) {
+        should.fail('Shouldn\'t have any errors:' + err.message)
+        done()
+      }
 
 
-  })
+    })
 
-  it('should not marshal password field', function passwordFieldTest() {
+    it('should not marshal password field', function passwordFieldTest() {
 
-    should.not.exist(created_user.toJSON().password)
+      should.not.exist(created_user.toJSON().password)
 
-  })
+    })
 
+
+    it('should have name, email', function dataSavedTest() {
+
+
+
+    })
+   })
 
 
 })
