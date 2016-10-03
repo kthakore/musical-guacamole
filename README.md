@@ -10,6 +10,7 @@ Koa, Kafka, PostgreSQL, Mocha, Should, ESLint, Sequelize Application
   - Docker Node for the server
   - Scaling with Docker Swarm/Machine
   - Code Pipeline with Jenkins
+  - Koa State - Prevents Pollution
 
 # Works on
   - MacOSX (OSX El Capitan)
